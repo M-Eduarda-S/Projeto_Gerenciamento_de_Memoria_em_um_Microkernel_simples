@@ -1,4 +1,4 @@
-# Projeto de Gerenciamento de Memória em um Microkernel simples
+# Projeto de Gerenciamento de Memória em um Microkernel simples para RISC-V
 
 O projeto-base utilizado neste trabalho está disponível em: `https://github.com/VielF/BasicMicrokernel`
 
