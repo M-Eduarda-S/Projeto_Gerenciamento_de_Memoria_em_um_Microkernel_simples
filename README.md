@@ -1,4 +1,4 @@
-# Projeto de Gerenciamento de Memória em um Microkenel simples
+# Projeto de Gerenciamento de Memória em um Microkernel simples
 
 O projeto-base utilizado neste trabalho está disponível em: `https://github.com/VielF/BasicMicrokernel`
 
