@@ -49,19 +49,30 @@ Em um terminal:
 ```bash
 boot/
 │
-├── start.S Boot  # inicial e runtime mínimo
-├── start.S Boot  # inicial e runtime mínimo
+├── start.S       # Boot inicial e runtime mínimo
 └── trap_entry.S  # Entrada de traps
+include/
+│
+├──	fs.h
+├──	memory.h
+├──	scheduler.h
+├──	string.h
+├──	taks.h
+└──	uart.h
 kernel/
 │
-├── main.c        # Inicialização do kernel
-├── uart.c        # Saída serial
-├── memory.c      # Heap do kernel
-├── task.c        # Criação de tasks
 ├── context.S     # Context switch
+├── fs.c
+├── main.c        # Inicialização do kernel
+├── memory.c      # Heap do kernel
 ├── scheduler.c   # Escalonador
+├── string.c
+├── syscall.c
+├── task.c        # Criação de tasks
 ├── timer.c       # Timer via SBI
-└── trap.c        # Tratamento de interrupções
+├── trap.c        # Tratamento de interrupções
+├── uart.c        # Saída serial
+└── user.S
 linker.ld         # Layout da memória
 Makefile          # Compilação
 README.md         # Explicação do projeto
