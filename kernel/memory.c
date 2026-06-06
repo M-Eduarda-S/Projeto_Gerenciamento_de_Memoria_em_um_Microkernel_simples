@@ -7,10 +7,11 @@
 #define HEAP_SIZE  (8 * 1024 * 1024)   // 8 MB
 
 /* Estrutura do bloco de memória */
-typedef struct block {
+typedef struct block
+{
     uint64_t size;
-    struct block *next;
     int free;
+    struct block *next;
 } block_t;
 
 static uint8_t *heap_base = (uint8_t*)HEAP_START;
@@ -40,33 +41,33 @@ static void dividir_block(block_t *block, uint64_t size)
     block->next = new_block;
 }
 
-/*   Alocador bump   */
+/*   Free List Allocator - First Fit   */
 
 void *kmalloc(uint64_t size)
 {
+    block_t *atual = free_list; // passa pela lista de blocos livres
+
     if (size == 0)
         return 0;
 
     /* Alinhamento para 8 bytes */
     size = (size + 7) & ~7ULL;
 
-    block_t *aux = free_list; // passa pela lista de blocos livres
-
     // faz a divisão do bloco se precisar
-    while (aux)
+    while (atual)
     {
-        if (aux->free && aux->size >= size)
+        if (atual->free && atual->size >= size) // first fit
         {
             /* divisão do bloco */
-            if (aux->size > size + sizeof(block_t))
-                dividir_block(aux, size);
+            if (atual->size > size + sizeof(block_t))
+                dividir_block(atual, size);
 
-            aux->free = 0;
+            atual->free = 0; // ocupado
 
-            return (void*)(aux + 1);
+            return (void*)(atual + 1);
         }
 
-        aux = aux->next;
+        atual = atual->next;
     }
 
     return 0;
@@ -75,18 +76,18 @@ void *kmalloc(uint64_t size)
 /*   Coalescência de blocos   */
 static void coalesce_blocks ()
 {
-    block_t *aux = free_list;
+    block_t *atual = free_list;
 
-    while (aux && aux->next)
+    while (atual && atual->next)
     {
-        if (aux->free && aux->next->free)
+        if (atual->free && atual->next->free)
         {
-            aux->size += sizeof(block_t) + aux->next->size;
-            aux->next = aux->next->next;
+            atual->size += sizeof(block_t) + atual->next->size;
+            atual->next = atual->next->next;
         }
         else
         {
-            aux = aux->next;
+            atual = atual->next;
         }
     }
 }
@@ -112,15 +113,15 @@ void kfree(void *ptr)
 uint64_t memory_used(void)
 {   
     uint64_t usado = 0;
-    block_t *aux = free_list;
+    block_t *atual = free_list;
 
     // passa pela lista de blocos para calcular o total usado
-    while (aux)
+    while (atual)
     {
-        if (!aux->free)
-            usado += aux->size;
+        if (!atual->free)
+            usado += atual->size;
 
-        aux = aux->next;
+        atual = atual->next;
     }
 
     return usado;
@@ -130,14 +131,14 @@ uint64_t memory_used(void)
 uint64_t memory_free(void)
 {   
     uint64_t memoria_livre = 0;
-    block_t *aux = free_list;
+    block_t *atual = free_list;
 
-    while (aux)
+    while (atual)
     {
-        if (aux->free)
-            memoria_livre += aux->size;
+        if (atual->free)
+            memoria_livre += atual->size;
 
-        aux = aux->next;
+        atual = atual->next;
     }
 
     return memoria_livre;
