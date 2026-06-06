@@ -106,6 +106,13 @@ O sistema utiliza uma **lista encadeada de blocos de memória**:
 - Estatísticas do heap.
 
 ---
+## Modelo de Escalonamento
+
+O sistema utiliza **escalonamento cooperativo**, onde a troca de contexto ocorre apenas quando a task chama `yield()`.
+
+Não há uso de interrupções de timer, portanto o projeto não implementa multitarefa preemptiva nesta versão. No entanto, a estrutura do sistema já permite evolução futura para esse modelo.
+
+---
 
 ## Troca de Contexto
 A troca de contexto foi implementada em Assembly `context.S`, salvando e restaurando registradores das tarefas.
