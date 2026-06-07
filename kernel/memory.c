@@ -1,5 +1,6 @@
 #include "memory.h"
 #include <stdint.h>
+#include "uart.h"
 
 /*   Configuração do heap   */
 
@@ -152,4 +153,29 @@ uint64_t memory_free(void)
 uint64_t memory_total(void)
 {
     return HEAP_SIZE;
+}
+
+/* Imprime o estado do heap: endereços, tamanhos e status dos blocos */
+void heap_dump(void)
+{
+    uart_print("--- HEAP DUMP ---\n");
+
+    block_t *atual = free_list;
+    int idx = 0;
+
+    while (atual)
+    {
+        uart_print("Block ");
+        uart_print_uint(idx++);
+        uart_print(": addr ");
+        uart_print_uint((uint64_t)atual);
+        uart_print(" size ");
+        uart_print_uint(atual->size);
+        uart_print(" bytes - ");
+        uart_print(atual->free ? "FREE\n" : "USED\n");
+
+        atual = atual->next;
+    }
+
+    uart_print("--- END HEAP DUMP ---\n");
 }

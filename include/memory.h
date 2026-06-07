@@ -14,3 +14,6 @@ void kfree(void *ptr);
 uint64_t memory_used(void);
 uint64_t memory_free(void);
 uint64_t memory_total(void);
+
+/* Debug: imprime o mapa do heap via UART */
+void heap_dump(void);

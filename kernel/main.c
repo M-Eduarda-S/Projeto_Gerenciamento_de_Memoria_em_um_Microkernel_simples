@@ -5,6 +5,19 @@
 
 extern void uart_print(const char*);
 
+static void delay_loop(uint64_t count)
+{
+    while (count--)
+        asm volatile ("nop");
+}
+
+static void delay_seconds(uint64_t seconds)
+{
+    /* delay na impressão */
+    const uint64_t count_per_second = 200000000ULL;
+    delay_loop(seconds * count_per_second);
+}
+
 /*   Tasks   */
 
 void task1()
@@ -21,6 +34,7 @@ void task1()
         uart_print_uint(memory_free());
         uart_print(" bytes\n\n");
 
+        delay_seconds(1);
         yield();
     }
 }
@@ -39,6 +53,7 @@ void task2()
         uart_print_uint(memory_free());
         uart_print(" bytes\n\n");
 
+        delay_seconds(1);
         yield();
     }
 }
@@ -48,6 +63,9 @@ void task2()
 void kernel_main()
 {
     memory_init();   // OBRIGATÓRIO
+
+    /* Dump inicial do heap para debug via UART */
+    heap_dump();
 
     uart_print("\n=== Kernel ===\n");
 
