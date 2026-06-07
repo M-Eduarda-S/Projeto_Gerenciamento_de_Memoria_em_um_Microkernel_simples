@@ -31,3 +31,15 @@ void xTaskCreate(void (*task)(void),
 
     task_count++;
 }
+
+/* Faz a liberação da task com o kfree e libera a memoria */
+void vTaskDelete(int id)
+{
+    if (id < 0 || id >= task_count)
+        return;
+
+    if (tasks[id].stack)
+        kfree(tasks[id].stack); // libera a memória da stack no heap
+
+    tasks[id].stack = 0;
+}

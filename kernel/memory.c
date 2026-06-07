@@ -59,7 +59,7 @@ void *kmalloc(uint64_t size)
         if (atual->free && atual->size >= size) // first fit
         {
             /* divisão do bloco */
-            if (atual->size > size + sizeof(block_t))
+            if (atual->size >= size + sizeof(block_t) + 8)
                 dividir_block(atual, size);
 
             atual->free = 0; // ocupado
@@ -98,6 +98,10 @@ void kfree(void *ptr)
 {
 
     if (!ptr) 
+        return;
+
+    /* verifica se esta dentro do heap */
+    if ((uint8_t*)ptr < heap_base || (uint8_t*)ptr >= heap_base + HEAP_SIZE)
         return;
 
     block_t *block = (block_t*)ptr - 1;
