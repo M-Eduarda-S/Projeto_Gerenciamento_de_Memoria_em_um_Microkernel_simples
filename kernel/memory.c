@@ -31,6 +31,10 @@ void memory_init(void)
 
 static void dividir_block(block_t *block, uint64_t size)
 {
+    // não cria quando não há espaço suficiente para dividir
+    if (block->size <= size + sizeof(block_t))
+        return;
+
     block_t *new_block = (block_t*)((uint8_t*)block + sizeof(block_t) + size); // bloco novo começa após o bloco atual
 
     new_block->size = block->size - size - sizeof(block_t); // tem o tamanho restante
@@ -78,17 +82,17 @@ static void coalesce_blocks ()
 {
     block_t *atual = free_list;
 
-    while (atual && atual->next)
+    while (atual)
     {
-        if (atual->free && atual->next->free)
+        // junta com o próximo enquanto der
+        while (atual->next && atual->free && atual->next->free)
         {
             atual->size += sizeof(block_t) + atual->next->size;
             atual->next = atual->next->next;
         }
-        else
-        {
-            atual = atual->next;
-        }
+            
+        atual = atual->next;
+        
     }
 }
 
@@ -105,6 +109,23 @@ void kfree(void *ptr)
         return;
 
     block_t *block = (block_t*)ptr - 1;
+
+    // o bloco precisa existir na lista
+    block_t *atual = free_list;
+    int achou = 0;
+
+    while (atual)
+    {
+        if (atual == block)
+        {
+            achou = 1;
+            break;
+        }
+        atual = atual->next;
+    }
+
+    if (!achou)
+        return;
 
     block->free = 1;
 
@@ -123,7 +144,7 @@ uint64_t memory_used(void)
     while (atual)
     {
         if (!atual->free)
-            usado += atual->size;
+            usado += atual->size + sizeof(block_t); // conta tudo
 
         atual = atual->next;
     }
