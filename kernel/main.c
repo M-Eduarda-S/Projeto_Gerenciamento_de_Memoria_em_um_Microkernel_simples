@@ -40,8 +40,8 @@ static void show_menu(void)
     uart_print("5 - Teste: liberar p3 e p4\n");
     uart_print("6 - Criar tasks com stacks dinamicas\n");
     uart_print("7 - Mostrar mapa do heap\n");
-    uart_print("s - Iniciar o scheduler\n");
-    uart_print("q - Sair do menu e travar kernel\n");
+    uart_print("8 - Iniciar o scheduler\n");
+    uart_print("0 - Sair do menu e travar kernel\n");
     uart_print("Escolha: ");
 }
 
