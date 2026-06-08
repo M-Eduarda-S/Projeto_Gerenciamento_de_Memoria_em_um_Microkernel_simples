@@ -193,10 +193,10 @@ void heap_dump(void)
         uart_print(" size ");
         uart_print_uint(atual->size);
         uart_print(" bytes - ");
-        uart_print(atual->free ? "FREE\n" : "USED\n");
+        uart_print(atual->free ? "LIVRE\n" : "USANDO\n");
 
         atual = atual->next;
     }
 
-    uart_print("--- END HEAP DUMP ---\n");
+    uart_print("--- FIM HEAP DUMP ---\n");
 }

@@ -210,7 +210,7 @@ void task1()
 {
     while (1)
     {
-        uart_print("Task 1 running\n");
+        uart_print("Task 1 rodando\n");
         print_memory_stats("Task 1 estatisticas");
         yield();
     }
@@ -220,7 +220,7 @@ void task2()
 {
     while (1)
     {
-        uart_print("Task 2 running\n");
+        uart_print("Task 2 rodando\n");
         print_memory_stats("Task 2 estatisticas");
         yield();
     }
