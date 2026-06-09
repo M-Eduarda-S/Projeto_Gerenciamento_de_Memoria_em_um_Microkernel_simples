@@ -39,8 +39,9 @@ static void show_menu(void)
     uart_print("4 - Teste: alocar p4 em memoria liberada\n");
     uart_print("5 - Teste: liberar p3 e p4\n");
     uart_print("6 - Criar tasks com stacks dinamicas\n");
-    uart_print("7 - Mostrar mapa do heap\n");
-    uart_print("8 - Iniciar o scheduler\n");
+    uart_print("7 - Remover Task 0 (liberar stack)\n");
+    uart_print("8 - Mostrar mapa do heap\n");
+    uart_print("9 - Iniciar o scheduler\n");
     uart_print("0 - Sair do menu e travar kernel\n");
     uart_print("Escolha: ");
 }
@@ -182,9 +183,22 @@ static int handle_menu_choice(char choice)
             create_tasks_menu();
             break;
         case '7':
-            heap_dump();
+            if (!tasks_created)
+            {
+                uart_print("Crie as tasks primeiro.\n");
+                break;
+            }
+
+            uart_print("=== Removendo Task 0 ===\n");
+            vTaskDelete(0);
+            uart_print("Task 0 removida (stack liberada)\n\n");
+
+            print_memory_stats("Heap apos remover task");
             break;
         case '8':
+            heap_dump();
+            break;
+        case '9':
         
             if (!tasks_created)
             {
