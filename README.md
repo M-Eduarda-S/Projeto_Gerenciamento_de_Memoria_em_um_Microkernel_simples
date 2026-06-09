@@ -146,8 +146,9 @@ O sistema possui um menu interativo via **UART**, permitindo testar dinamicament
 4 - Teste: alocar p4 em memoria liberada
 5 - Teste: liberar p3 e p4
 6 - Criar tasks com stacks dinamicas
-7 - Mostrar mapa do heap
-8 - Iniciar o scheduler
+7 - Remover Task 0 (liberar stack)
+8 - Mostrar mapa do heap
+9 - Iniciar o scheduler
 0 - Sair do menu e travar kernel
 ```
 
@@ -210,7 +211,19 @@ task2
 - Imprime estatísticas de memória;
 - Usa yield() para troca de contexto.
 
-#### 7 - Dump do Heap
+#### 7 - Remoção de Task (liberação de memória dinâmica)
+Remove a **Task 0**, liberando sua stack com `kfree()`.
+
+**Demonstra:**
+- Integração entre gerenciamento de memória e sistema de tasks;
+- Liberação de memória associada a estruturas do kernel;
+- Redução da memória utilizada no heap.
+
+**Observação:**
+- A task **não é removida completamente** do sistema, apenas sua **stack é liberada**;
+- O scheduler **ignora** tasks inválidas.
+
+#### 8 - Dump do Heap
 Exibe o estado interno do heap:
 ```bash
 Lista de blocos
@@ -219,7 +232,7 @@ Status (livre/ocupado)
 ```
 Útil para depuração e validação do allocator.
 
-#### 8 - Iniciar Scheduler
+#### 9 - Iniciar Scheduler
 
 Inicia o escalonador cooperativo.
 
@@ -254,17 +267,20 @@ Heap livre: 8384440 bytes
 - Monitoram o estado do heap em tempo real;
 - Conclusão dos Testes.
 
+**Obs**: Para fechar o QEMU corretamente, utilize: Ctrl + A  → solta →  X
+
 
 #### 0 - Encerrar Execução
 Trava o kernel em loop infinito.
 
-### Exemplo de Fluxo de Teste
-2  -> Aloca blocos iniciais
-3  -> Libera e testa coalescência
-4  -> Testa reutilização
-5  -> Libera tudo
-6  -> Cria tasks
-8  -> Inicia scheduler
+### Exemplo de Fluxo de Teste Sugerido
+2. Aloca blocos iniciais
+3. Libera e testa coalescência
+4. Testa reutilização
+5. Libera tudo
+6. Cria tasks
+7. Remover uma task (liberar memória, se for utilizado o 9 vai mostrar só a task 2)
+9. Inicia scheduler
 
 **O menu permite validar que o alocador:**
 - Reutiliza memória corretamente;
