@@ -9,7 +9,16 @@ static int current = 0;
 
 static int round_robin()
 {
-    return (current + 1) % task_count;
+    int next = current;
+    int count = 0;
+
+    // para pular tasks invalidas
+    do {
+        next = (next + 1) % task_count;
+        count++;
+    } while (tasks[next].entry == 0 && count < task_count);
+
+    return next;
 }
 
 /*   Algoritmo atual   */
@@ -42,5 +51,13 @@ void scheduler_start()
     if (task_count == 0)
         return;
 
-    tasks[0].entry();
+    // procura primeira task válida
+    for (int i = 0; i < task_count; i++)
+    {
+        if (tasks[i].entry != 0)
+        {
+            current = i;
+            tasks[i].entry();
+        }
+    }
 }

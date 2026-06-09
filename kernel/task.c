@@ -46,5 +46,11 @@ void vTaskDelete(int id)
     if (tasks[id].stack)
         kfree(tasks[id].stack); // libera a memória da stack no heap
 
-    tasks[id].stack = 0;
+    // remove do array
+    for (int i = id; i < task_count - 1; i++)
+    {
+        tasks[i] = tasks[i + 1];
+    }
+
+    task_count--;
 }
